@@ -21,7 +21,7 @@ jobs:
       - name: Test3
         run: |
           echo "https://api.github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/cancel"
-          gh api repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} -X DELETE
+          gh api repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/cancel -X POST
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Validate
