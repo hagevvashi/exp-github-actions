@@ -21,6 +21,7 @@ jobs:
       - name: Test3
         run: |
           echo "https://api.github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/cancel"
+          gh api https://api.github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/cancel
       - name: Validate
         run: |
           if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
