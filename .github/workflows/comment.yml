@@ -9,9 +9,16 @@ jobs:
   trigger:
     name: trigger
     if: |
-      github.event.issue.pull_request != null && github.event.comment.body == '@github deploy'
+      github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/deploy')
     runs-on: ubuntu-latest
     steps:
+      - name: Validate
+        run: |
+          if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
+            :
+          else
+            exit 0
+          fi
       - name: Bar
         run: cat $GITHUB_EVENT_PATH
       - name: Foo
