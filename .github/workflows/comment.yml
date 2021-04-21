@@ -26,7 +26,7 @@ jobs:
           if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
             :
           else
-            exit 0
+            exit 1
           fi
       - name: Bar
         run: cat $GITHUB_EVENT_PATH
