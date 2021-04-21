@@ -22,10 +22,11 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-  bar:
-    name: bar
+  trigger-deploy:
+    name: trigger-deploy
     needs: [validate]
     runs-on: ubuntu-latest
     steps:
-      - name: Bar
-        run: echo "bar"
+      - name: Echo deploy destination
+        run: |
+          echo ${{ github.event.comment.body }} | sed -e 's/^\/deploy[ \f\n\r\t]\+\([a-zA-Z0-9_\/-]\+\)$/\1/g'
