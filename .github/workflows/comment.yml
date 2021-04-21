@@ -32,9 +32,9 @@ jobs:
           CIRCLECI_TOKEN: ${{ secrets.CIRCLECI_TOKEN }}
         run: |
           DEPLOY_DESTINATION=$(echo ${{ github.event.comment.body }} | sed -e 's/^\/deploy[ \f\n\r\t]\+\([a-zA-Z0-9_\/-]\+\)$/\1/g')
-          curl \
-            -X POST \
-            -H "Content-Type: application/json" \
-            -H "Circle-Token: $CIRCLECI_TOKEN" \
-            -d "{\"branch\": \"deploy-multiple-env\", \"parameters\": { \"run-deploy\": true, \"deploy-destination\": \"$DEPLOY_DESTINATION\" } }" \
-            "https://circleci.com/api/v2/project/gh/${GITHUB_REPOSITORY}/pipeline"
+          # curl \
+          #   -X POST \
+          #   -H "Content-Type: application/json" \
+          #   -H "Circle-Token: $CIRCLECI_TOKEN" \
+          #   -d "{\"branch\": \"deploy-multiple-env\", \"parameters\": { \"run-deploy\": true, \"deploy-destination\": \"$DEPLOY_DESTINATION\" } }" \
+          #   "https://circleci.com/api/v2/project/gh/${GITHUB_REPOSITORY}/pipeline"
