@@ -36,6 +36,7 @@ jobs:
         id: get-branch-name
         run: |
           echo ${{ github.repository }}
+          echo ${{ github.run_id }}
       - name: Triggers CircleCI pipeline
         env:
           CIRCLECI_TOKEN: ${{ secrets.CIRCLECI_TOKEN }}
