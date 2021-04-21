@@ -12,5 +12,7 @@ jobs:
       github.event.issue.pull_request != null
     runs-on: ubuntu-latest
     steps:
+      - name: Bar
+        run: cat $GITHUB_EVENT_PATH
       - name: Foo
         run: echo ${{ github.event.comment.body }}
