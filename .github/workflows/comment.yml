@@ -12,6 +12,9 @@ jobs:
       github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/deploy')
     runs-on: ubuntu-latest
     steps:
+      - name: Test
+        run: |
+          echo ${{ github.event.comment.body }} 
       - name: Validate
         run: |
           if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
