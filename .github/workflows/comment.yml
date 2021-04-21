@@ -6,33 +6,33 @@ on:
       - created
 
 jobs:
-  trigger:
-    name: trigger
+  validate:
+    name: validate
     if: |
       github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/deploy')
     runs-on: ubuntu-latest
     steps:
-      - name: Test1
-        run: |
-          echo ${{ github.event.comment.body }}
-      - name: Test2
-        run: |
-          echo ${{ github.event.comment.body }} | grep -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'
-      - name: Test3
-        run: |
-          echo "https://api.github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/cancel"
-          gh api repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/cancel -X POST
-          # sleep 10m
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Validate
+      - name: Validate comment
         run: |
           if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
-            echo 'succeed'
+            :
           else
-            exit 'fail'
+            gh api repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/cancel -X POST
+            exit 1
           fi
-      - name: Bar
-        run: cat $GITHUB_EVENT_PATH
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  foo:
+    name: foo
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Foo
-        run: echo ${{ github.event.comment.body }}
+        run: echo "foo"
+  bar:
+    name: bar
+    needs: [validate]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Bar
+        run: echo "bar"
