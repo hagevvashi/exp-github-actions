@@ -12,9 +12,15 @@ jobs:
       github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/deploy')
     runs-on: ubuntu-latest
     steps:
-      - name: Test
+      - name: Test1
         run: |
-          echo ${{ github.event.comment.body }} 
+          echo ${{ github.event.comment.body }}
+      - name: Test2
+        run: |
+          echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'
+      - name: Test3
+        run: |
+          exit 0
       - name: Validate
         run: |
           if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
