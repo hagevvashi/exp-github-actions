@@ -18,13 +18,12 @@ jobs:
             :
           else
             gh api repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/cancel -X POST
-            exit 1
+            sleep 1m
           fi
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
   foo:
     name: foo
-    if: ${{ failure() }}
     runs-on: ubuntu-latest
     steps:
       - name: Foo
