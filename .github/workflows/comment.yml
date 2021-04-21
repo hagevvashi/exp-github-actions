@@ -19,8 +19,8 @@ jobs:
           if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
             echo "OK. Deploy command is valid."
           else
-            echo "NG. Deploy command is invalid. Cancelling the workflow ${GITHUB_RUN_ID}..."
-            gh api repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/cancel -X POST
+            echo "NG. Deploy command is invalid. Cancelling the workflow ${{ github.run_id }}..."
+            gh api repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel -X POST
           fi
   trigger-deploy:
     name: trigger-deploy
@@ -35,8 +35,8 @@ jobs:
       - name: Get the branch name
         id: get-branch-name
         run: |
-          echo ${{ github.repository }}
-          echo ${{ github.run_id }}
+          # gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}
+          echo ${{ github.event.issue.number }}
       - name: Triggers CircleCI pipeline
         env:
           CIRCLECI_TOKEN: ${{ secrets.CIRCLECI_TOKEN }}
@@ -48,5 +48,5 @@ jobs:
           #   -H "Content-Type: application/json" \
           #   -H "Circle-Token: $CIRCLECI_TOKEN" \
           #   -d "{\"branch\": \"deploy-multiple-env\", \"parameters\": { \"run-deploy\": true, \"deploy-destination\": \"${{ steps.get-deploy-destination.outputs.deploy-destination }}\" } }" \
-          #   "https://circleci.com/api/v2/project/gh/${GITHUB_REPOSITORY}/pipeline"
+          #   https://circleci.com/api/v2/project/gh/${{ github.repository }}/pipeline
 
