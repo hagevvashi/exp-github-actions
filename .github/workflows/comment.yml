@@ -20,7 +20,7 @@ jobs:
           echo ${{ github.event.comment.body }} | grep -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'
       - name: Test3
         run: |
-          exit 1
+          echo "https://api.github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/cancel"
       - name: Validate
         run: |
           if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
