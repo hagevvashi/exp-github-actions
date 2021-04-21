@@ -20,13 +20,13 @@ jobs:
           echo ${{ github.event.comment.body }} | grep -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'
       - name: Test3
         run: |
-          exit 0
+          exit 1
       - name: Validate
         run: |
           if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
-            :
+            echo 'succeed'
           else
-            exit 1
+            exit 'fail'
           fi
       - name: Bar
         run: cat $GITHUB_EVENT_PATH
