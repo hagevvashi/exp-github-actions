@@ -9,7 +9,7 @@ jobs:
   trigger:
     name: trigger
     if: |
-      github.event.issue.pull_request != null
+      github.event.issue.pull_request != null && github.event.comment.body == '!github deploy'
     runs-on: ubuntu-latest
     steps:
       - name: Bar
