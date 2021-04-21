@@ -6,9 +6,11 @@ on:
       - created
 
 jobs:
-  trigger-deploy:
+  trigger:
+    name: trigger
+    if: |
+      github.event.issue.pull_request != null
     runs-on: ubuntu-latest
-
     steps:
       - name: Foo
-        run: echo 'Foo'
+        run: echo ${{ github.event.comment.body }}
