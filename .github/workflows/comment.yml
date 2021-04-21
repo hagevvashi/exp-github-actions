@@ -1,0 +1,14 @@
+name: trigger deploy
+
+on:
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  trigger-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Foo
+        run: echo 'Foo'
