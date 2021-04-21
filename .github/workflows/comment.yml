@@ -35,8 +35,8 @@ jobs:
       - name: Get the branch name
         id: get-branch-name
         run: |
-          # gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}
-          echo ${{ github.event.issue.number }}
+          gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} \
+            jq -r '.base.ref'
       - name: Triggers CircleCI pipeline
         env:
           CIRCLECI_TOKEN: ${{ secrets.CIRCLECI_TOKEN }}
