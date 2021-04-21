@@ -38,7 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
           gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} \
-            jq -r '.base.ref'
+            | jq -r '.base.ref'
       - name: Triggers CircleCI pipeline
         env:
           CIRCLECI_TOKEN: ${{ secrets.CIRCLECI_TOKEN }}
