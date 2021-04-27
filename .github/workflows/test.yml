@@ -13,10 +13,10 @@ jobs:
     steps:
       - name: echo
         run: |
-          echo ${{ secrets.TEST_MESSAGE }}
+          echo ${{ secrets.TEST_MESSAGE }} | grep .
   test2:
     runs-on: ubuntu-latest
     steps:
       - name: echo
         run: |
-          echo ${{ secrets.TEST_MESSAGE }}
+          echo ${{ secrets.TEST_MESSAGE }} | grep .
