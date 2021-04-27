@@ -1,0 +1,16 @@
+name: test
+
+on:
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    environment:
+      name: test
+    steps:
+      - name: test
+        run: |
+          echo "test"
