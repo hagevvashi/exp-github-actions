@@ -6,11 +6,17 @@ on:
       - created
 
 jobs:
-  test:
+  test1:
     runs-on: ubuntu-latest
     environment:
       name: test
     steps:
-      - name: test
+      - name: echo
         run: |
-          echo "test"
+          echo ${{ secrets.TEST_MESSAGE }}
+  test2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo
+        run: |
+          echo ${{ secrets.TEST_MESSAGE }}
