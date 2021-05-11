@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Hoge
         run: |
-          echo ${{ github.ref }}
+          echo ${GITHUB_REF#refs/heads/}
           exit 1
   deploy:
     name: trigger-deploy
