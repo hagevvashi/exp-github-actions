@@ -12,9 +12,13 @@ jobs:
     name: test
     runs-on: ubuntu-latest
     steps:
+      - name: Get the branch name
+        id: get-branch-name
+        run: |
+          echo ::set-output name=branch-name::$(echo ${GITHUB_REF#refs/heads/})
       - name: Hoge
         run: |
-          echo ${GITHUB_REF#refs/heads/}
+          echo ${{ steps.get-branch-name.outputs.branch-name }}
           exit 1
   deploy:
     name: trigger-deploy
