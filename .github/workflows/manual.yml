@@ -15,7 +15,7 @@ jobs:
       - name: Get the branch name
         id: get-branch-name
         run: |
-          echo ::set-output name=branch-name::${GITHUB_REF#refs/heads/}
+          echo '::set-output name=branch-name::${GITHUB_REF#refs/heads/}'
       - name: Hoge
         run: |
           echo ${{ steps.get-branch-name.outputs.branch-name }}
