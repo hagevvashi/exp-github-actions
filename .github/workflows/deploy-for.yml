@@ -16,7 +16,7 @@ jobs:
     # if: |
     #   ${{ github.event_name == 'workflow_dispatch' }}
     if: |
-      github.event_name == issue_comment
+      github.event_name == 'issue_comment'
     runs-on: ubuntu-latest
     steps:
       - name: bar
