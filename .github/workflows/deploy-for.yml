@@ -84,6 +84,7 @@ jobs:
             -o /dev/null \
             -w '%{http_code}\n' \
             -s)
-          if [ "$HTTP_STATUS" -eq 400 ]; then
-            echo 'status is 400'
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "API request for the CircleCI workflow fails with status code $HTTP_STATUS"
+            exit 1
           fi
