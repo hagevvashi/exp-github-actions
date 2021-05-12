@@ -27,6 +27,9 @@ jobs:
 
 workflows:
   version: 2
+  ci:
+    jobs:
+      - foo
   deploy:
     when: << pipeline.parameters.run-deploy >>
     jobs:
