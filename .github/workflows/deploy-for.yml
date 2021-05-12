@@ -80,5 +80,5 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Circle-Token: $CIRCLECI_TOKEN" \
             -d "{\"branch\": \"${{ steps.get-branch-name.outputs.branch-name }}\", \"parameters\": { \"run-deploy\": true, \"deploy-destination\": \"${{ steps.get-deploy-destination.outputs.deploy-destination }}\" } }" \
-            https://circleci.com/api/v2/project/gh/${{ github.repository }}/pipeline
+            https://circleci.com/api/v2/project/gh/${{ github.repository }}/pipeline \
             -w '%{http_code}\n'
