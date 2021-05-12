@@ -81,10 +81,12 @@ jobs:
             -H "Circle-Token: $CIRCLECI_TOKEN" \
             -d "{\"branch\": \"${{ steps.get-branch-name.outputs.branch-name }}\", \"parameters\": { \"run-deploy\": true, \"deploy-destination\": \"${{ steps.get-deploy-destination.outputs.deploy-destination }}\" } }" \
             https://circleci.com/api/v2/project/gh/${{ github.repository }}/pipeline \
-            -o /dev/null \
+            -o output \
             -w '%{http_code}\n' \
             -s)
           if [ "$HTTP_STATUS" -ne 200 ]; then
             echo "API request for the CircleCI workflow fails with status code $HTTP_STATUS"
+            echo 'the response body is'
+            cat ./output
             exit 1
           fi
