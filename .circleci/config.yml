@@ -1,0 +1,33 @@
+version: 2.1
+
+parameters:
+  run-deploy:
+    type: boolean
+    default: false
+  deploy-destination:
+    type: enum
+    enum: ["staging", "production"]
+    default: "staging"
+
+executors:
+  nodejs:
+    docker:
+      - image: circleci/node:latest
+
+jobs:
+  foo:
+    executor:
+      name: nodejs
+    steps:
+      - run:
+          name: Foo
+          shell: "/bin/bash -euo pipefail"
+          command: |
+            echo 'foo'
+
+workflows:
+  version: 2
+  deploy:
+    when: << pipeline.parameters.run-deploy >>
+    jobs:
+      - foo
