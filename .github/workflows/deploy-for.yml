@@ -84,4 +84,6 @@ jobs:
             -o /dev/null \
             -w '%{http_code}\n' \
             -s)
-          echo $HTTP_STATUS
+          if [ "$HTTP_STATUS" -eq 400 ]; then
+            echo 'status is 400'
+          fi
