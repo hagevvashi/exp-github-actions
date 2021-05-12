@@ -18,7 +18,9 @@ jobs:
     steps:
       - name: bar
         run: |
-          echo ${{ github.event_name }}
+          if [ ${{ github.event_name }} = 'workflow_dispatch' ]; then
+            echo 'foo'
+          fi
   validate-comment:
     name: validate-comment
     runs-on: ubuntu-latest
