@@ -15,10 +15,10 @@ jobs:
     name: prepare
     runs-on: ubuntu-latest
     steps:
-      - name: Foo
+      - name: Prepare
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          echo 'foo'
+          echo 'The workflow triggered with the event_name workflow_dispatch'
       - name: Validate comment
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -40,11 +40,11 @@ jobs:
         run: |
           case ${{ github.event_name }} in
             'issue_comment' )
-              echo 'issue_comment'
-              # echo ::set-output name=deploy-destination::$(echo ${{ github.event.comment.body }} \
-              #   | sed -e 's/^\/deploy[ \f\n\r\t]\+\([a-zA-Z0-9_\/-]\+\)$/\1/g')
+              echo ::set-output name=deploy-destination::$(echo ${{ github.event.comment.body }} \
+                | sed -e 's/^\/deploy[ \f\n\r\t]\+\([a-zA-Z0-9_\/-]\+\)$/\1/g')
               ;;
             'workflow_dispatch' )
+              echo '::set-output name=deploy-destination::${{ github.event.inputs.deploy-destination }}'
               echo 'workflow_dispatch'
               ;;
             * )
@@ -59,12 +59,11 @@ jobs:
         run: |
           case ${{ github.event_name }} in
             'issue_comment' )
-              echo 'issue_comment'
-              # echo ::set-output name=branch-name::$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} \
-              #   | jq -r '.head.ref')
+              echo ::set-output name=branch-name::$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} \
+                | jq -r '.head.ref')
               ;;
             'workflow_dispatch' )
-              echo 'workflow_dispatch'
+              echo '::set-output name=branch-name::${GITHUB_REF#refs/heads/}'
               ;;
             * )
               echo 'The event type must be issue_comment or workflow_dispatch'
