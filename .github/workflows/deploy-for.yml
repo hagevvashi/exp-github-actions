@@ -67,7 +67,7 @@ jobs:
               echo 'workflow_dispatch'
               ;;
             * )
-              echo 'The event type must be \'issue_comment\' or \'workflow_dispatch\''
+              echo 'The event type must be issue_comment or workflow_dispatch'
               exit 1
               ;;
       - name: Triggers CircleCI pipeline
