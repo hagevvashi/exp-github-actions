@@ -70,6 +70,7 @@ jobs:
               echo 'The event type must be issue_comment or workflow_dispatch'
               exit 1
               ;;
+          esac
       - name: Triggers CircleCI pipeline
         env:
           CIRCLECI_TOKEN: ${{ secrets.CIRCLECI_TOKEN }}
