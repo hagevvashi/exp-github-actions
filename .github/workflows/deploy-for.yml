@@ -11,24 +11,18 @@ on:
         required: true
 
 jobs:
-  test:
-    name: foo
-    if: ${{ github.event_name == 'workflow_dispatch' }}
+  prepare:
+    name: prepare
     runs-on: ubuntu-latest
     steps:
-      - name: bar
+      - name: Foo
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          if [ ${{ github.event_name }} = 'workflow_dispatch' ]; then
-            echo 'foo'
-          fi
-  validate-comment:
-    name: validate-comment
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/deploy') }}
-    steps:
+          echo 'foo'
       - name: Validate comment
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/deploy') }}
         run: |
           if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
             echo "OK. Deploy command is valid."
@@ -38,21 +32,44 @@ jobs:
           fi
   trigger-deploy:
     name: trigger-deploy
-    needs: [validate-comment]
+    needs: [prepare]
     runs-on: ubuntu-latest
     steps:
       - name: Get the deploy destination
         id: get-deploy-destination
         run: |
-          echo ::set-output name=deploy-destination::$(echo ${{ github.event.comment.body }} \
-            | sed -e 's/^\/deploy[ \f\n\r\t]\+\([a-zA-Z0-9_\/-]\+\)$/\1/g')
+          case ${{ github.event_name }} in
+            'issue_comment' )
+              echo 'issue_comment'
+              # echo ::set-output name=deploy-destination::$(echo ${{ github.event.comment.body }} \
+              #   | sed -e 's/^\/deploy[ \f\n\r\t]\+\([a-zA-Z0-9_\/-]\+\)$/\1/g')
+              ;;
+            'workflow_dispatch' )
+              echo 'workflow_dispatch'
+              ;;
+            * )
+              echo 'The event type must be \'issue_comment\' or \'workflow_dispatch\''
+              exit 1
+              ;;
+          esac
       - name: Get the branch name
         id: get-branch-name
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
-          echo ::set-output name=branch-name::$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} \
-            | jq -r '.head.ref')
+          case ${{ github.event_name }} in
+            'issue_comment' )
+              echo 'issue_comment'
+              # echo ::set-output name=branch-name::$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} \
+              #   | jq -r '.head.ref')
+              ;;
+            'workflow_dispatch' )
+              echo 'workflow_dispatch'
+              ;;
+            * )
+              echo 'The event type must be \'issue_comment\' or \'workflow_dispatch\''
+              exit 1
+              ;;
       - name: Triggers CircleCI pipeline
         env:
           CIRCLECI_TOKEN: ${{ secrets.CIRCLECI_TOKEN }}
