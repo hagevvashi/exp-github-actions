@@ -75,7 +75,7 @@ jobs:
         env:
           CIRCLECI_TOKEN: ${{ secrets.CIRCLECI_TOKEN }}
         run: |
-          curl \
+          HTTP_STATUS=$(curl \
             -X POST \
             -H "Content-Type: application/json" \
             -H "Circle-Token: $CIRCLECI_TOKEN" \
@@ -83,4 +83,5 @@ jobs:
             https://circleci.com/api/v2/project/gh/${{ github.repository }}/pipeline \
             -o /dev/null \
             -w '%{http_code}\n' \
-            -s
+            -s)
+          echo $HTTP_STATUS
