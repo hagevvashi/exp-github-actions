@@ -19,10 +19,14 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           echo 'The workflow triggered with the event_name workflow_dispatch'
-      - name: Validate comment
+      - name: Validate the comment
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/deploy') }}
+        # この setp の sed で用いている正規表現は trigger-depoloy job 内で用いている sed の正規表現と同様のものです。
+        # sed と grep で正規表現のルールが若干異なるため共通化ができませんでした。
+        # 期待しているのは "/deploy staging" や "/deploy    security" という文字列です
+        # "/deploystaging" や "/deploy staging security" というパターンは通らないようにチェックしています
         run: |
           if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
             echo "OK. Deploy command is valid."
@@ -37,6 +41,7 @@ jobs:
     steps:
       - name: Get the deploy destination
         id: get-deploy-destination
+        # この setp の sed で用いている正規表現は validate job 内で使われている grep の正規表現と同じです
         run: |
           case ${{ github.event_name }} in
             'issue_comment' )
