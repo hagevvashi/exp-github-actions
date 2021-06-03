@@ -15,10 +15,6 @@ jobs:
     name: prepare
     runs-on: ubuntu-latest
     steps:
-      - name: Prepare
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: |
-          echo 'The workflow triggered with the event_name workflow_dispatch'
       - name: Validate the comment
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
