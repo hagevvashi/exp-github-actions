@@ -27,7 +27,7 @@ jobs:
           fi
   trigger-deploy:
     name: trigger-deploy
-    needs: [prepare]
+    needs: prepare
     runs-on: ubuntu-latest
     steps:
       - name: Get the deploy destination
