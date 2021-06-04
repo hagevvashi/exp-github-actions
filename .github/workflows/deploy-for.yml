@@ -34,13 +34,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/deploy') }}
-        # この setp の sed で用いている正規表現は trigger-depoloy job 内で用いている sed の正規表現と同様のものです。
+        # この setp の grep で用いている正規表現と sed の正規表現は同様のものです。
         # sed と grep で正規表現のルールが若干異なるため共通化ができませんでした。
         # 期待しているのは "/deploy staging" や "/deploy    security" という文字列です
         # "/deploystaging" や "/deploy staging security" というパターンは通らないようにチェックしています
         run: |
+          VALID=0
           if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
-            echo "OK. Deploy command is valid."
+            DEPLOY_DESTINATION=$(echo ${{ github.event.comment.body }} | sed -e 's/^\/deploy[ \f\n\r\t]\+\([a-zA-Z0-9_\/-]\+\)$/\1/g')
+            if [ $DEPLOY_DESTINATION = 'staging' ] || [ $DEPLOY_DESTINATION = 'security' ]; then
+              VALID=1
+            fi
+          fi
+          if [ $VALID -eq 1 ]; then
+            echo "OK. Deploy command is valid. The deploy destination is $DEPLOY_DESTINATION"
           else
             echo "NG. Deploy command is invalid. Cancelling the workflow ${{ github.run_id }}..."
             gh api repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel -X POST
