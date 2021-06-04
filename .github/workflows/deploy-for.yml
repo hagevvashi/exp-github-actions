@@ -4,6 +4,11 @@ on:
   issue_comment:
     types:
       - created
+  workflow_dispatch:
+    inputs:
+      deploy-destination:
+        description: "the destination to deploy"
+        required: true
 
 jobs:
   prepare:
