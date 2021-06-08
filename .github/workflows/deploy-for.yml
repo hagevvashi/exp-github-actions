@@ -26,10 +26,11 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          if [ ${{ github.event.inputs.deploy-destination }} = 'staging' ] \
-            || [ ${{ github.event.inputs.deploy-destination }} = 'security' ]; then
-              echo ::set-output name=test::${{ github.event.inputs.deploy-destination }}
-              echo "OK. The value of deploy-destination is ${{ github.event.inputs.deploy-destination }}."
+          T=${{ github.event.inputs.deploy-destination }}
+          if [ $T = 'staging' ] \
+            || [ $T = 'security' ]; then
+              echo ::set-output name=test::$T
+              echo "OK. The value of deploy-destination is $T."
           else
             echo "NG. The value of deploy-destination is invalid. Cancelling the workflow ${{ github.run_id }}..."
             gh api repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel -X POST
