@@ -68,23 +68,6 @@ jobs:
         id: test
         run: |
           echo ${{ needs.prepare.outputs.deploy-destination }}
-      - name: Get the deploy destination
-        id: get-deploy-destination
-        # この setp の sed で用いている正規表現は validate job 内で使われている grep の正規表現と同じです
-        run: |
-          case ${{ github.event_name }} in
-            'issue_comment' )
-              echo ::set-output name=deploy-destination::$(echo ${{ github.event.comment.body }} \
-                | sed -e 's/^\/deploy[ \f\n\r\t]\+\([a-zA-Z0-9_\/-]\+\)$/\1/g')
-              ;;
-            'workflow_dispatch' )
-              echo '::set-output name=deploy-destination::${{ github.event.inputs.deploy-destination }}'
-              ;;
-            * )
-              echo 'The event type must be issue_comment or workflow_dispatch'
-              exit 1
-              ;;
-          esac
       - name: Get the branch name
         id: get-branch-name
         env:
@@ -111,7 +94,7 @@ jobs:
             -X POST \
             -H "Content-Type: application/json" \
             -H "Circle-Token: $CIRCLECI_TOKEN" \
-            -d "{\"branch\": \"${{ steps.get-branch-name.outputs.branch-name }}\", \"parameters\": { \"run-deploy\": true, \"deploy-destination\": \"${{ steps.get-deploy-destination.outputs.deploy-destination }}\" } }" \
+            -d "{\"branch\": \"${{ steps.get-branch-name.outputs.branch-name }}\", \"parameters\": { \"run-deploy\": true, \"deploy-destination\": \"${{ needs.prepare.outputs.deploy-destination }}\" } }" \
             https://circleci.com/api/v2/project/gh/${{ github.repository }}/pipeline \
             -o output \
             -w '%{http_code}\n' \
