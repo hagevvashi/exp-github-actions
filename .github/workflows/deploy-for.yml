@@ -15,7 +15,7 @@ jobs:
     name: prepare
     runs-on: ubuntu-latest
     outputs:
-      deploy-destination: ${{ steps.validate-deploy-destination.outputs.test || steps.validate-comment.outputs.test }}
+      deploy-destination: ${{ steps.validate-deploy-destination.outputs.deploy-destination || steps.validate-comment.outputs.deploy-destination }}
     if: |
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'issue_comment' && github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/deploy'))
@@ -28,7 +28,7 @@ jobs:
         run: |
           DEPLOY_DESTINATION=${{ github.event.inputs.deploy-destination }}
           if [ $DEPLOY_DESTINATION = 'staging' ] || [ $DEPLOY_DESTINATION = 'security' ]; then
-              echo ::set-output name=test::$DEPLOY_DESTINATION
+              echo ::set-output name=deploy-destination::$DEPLOY_DESTINATION
               echo "OK. The value of deploy-destination is $DEPLOY_DESTINATION."
           else
             echo "NG. The value of deploy-destination is invalid. Cancelling the workflow ${{ github.run_id }}..."
@@ -59,7 +59,7 @@ jobs:
             DEPLOY_DESTINATION=$(extract_deploy_destination)
             if [ $DEPLOY_DESTINATION = 'staging' ] || [ $DEPLOY_DESTINATION = 'security' ]; then
               VALID=1
-              echo ::set-output name=test::$DEPLOY_DESTINATION
+              echo ::set-output name=deploy-destination::$DEPLOY_DESTINATION
             fi
           fi
           if [ $VALID -eq 1 ]; then
@@ -73,10 +73,6 @@ jobs:
     needs: [prepare]
     runs-on: ubuntu-latest
     steps:
-      - name: test
-        id: test
-        run: |
-          echo ${{ needs.prepare.outputs.deploy-destination }}
       - name: Get the branch name
         id: get-branch-name
         env:
