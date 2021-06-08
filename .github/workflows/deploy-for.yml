@@ -27,8 +27,7 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           T=${{ github.event.inputs.deploy-destination }}
-          if [ $T = 'staging' ] \
-            || [ $T = 'security' ]; then
+          if [ $T = 'staging' ] || [ $T = 'security' ]; then
               echo ::set-output name=test::$T
               echo "OK. The value of deploy-destination is $T."
           else
@@ -45,13 +44,19 @@ jobs:
         # 期待しているのは "/deploy staging" や "/deploy    security" という文字列です
         # "/deploystaging" や "/deploy staging security" というパターンは通らないようにチェックしています
         run: |
+          function print_comment() {
+            echo ${{ github.event.comment.body }}
+          }
+          function extract_deploy_destination() {
+            print_comment | sed -e 's/^\/deploy[ \f\n\r\t]\+\([a-zA-Z0-9_\/-]\+\)$/\1/g'
+          }
+
           VALID=0
-          if echo ${{ github.event.comment.body }} | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
-            DEPLOY_DESTINATION=$(echo ${{ github.event.comment.body }} | sed -e 's/^\/deploy[ \f\n\r\t]\+\([a-zA-Z0-9_\/-]\+\)$/\1/g')
+          if print_comment | grep -q -E '^\/deploy\s+((\w|\d|\_|\-|\/)+)$'; then
+            DEPLOY_DESTINATION=$(extract_deploy_destination)
             if [ $DEPLOY_DESTINATION = 'staging' ] || [ $DEPLOY_DESTINATION = 'security' ]; then
               VALID=1
-              echo ::set-output name=test::$(echo ${{ github.event.comment.body }} \
-                | sed -e 's/^\/deploy[ \f\n\r\t]\+\([a-zA-Z0-9_\/-]\+\)$/\1/g')
+              echo ::set-output name=test::$DEPLOY_DESTINATION
             fi
           fi
           if [ $VALID -eq 1 ]; then
